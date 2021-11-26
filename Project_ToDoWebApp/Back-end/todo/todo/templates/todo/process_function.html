@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		{% load static %}
+		<link rel="stylesheet" href="{% static 'css/process_function.css' %}" />
+		<title>TodoApp</title>
+		<style>
+			.status h1 {
+				border-left: 1px solid #ccc;
+				border-right: 1px solid #ccc;
+				background-image: linear-gradient(to right, indigo, #ff6651);
+			}
+
+			/* You can remove these code below*/
+			:root {
+				--primary: #08aeea;
+				--secondary: #13d2b8;
+				--purple: #bd93f9;
+				--pink: #ff6bcb;
+				--blue: #8be9fd;
+				--gray: #333;
+				--font: "Poppins", sans-serif;
+				--gradient: linear-gradient(40deg, #ff6ec4, #7873f5);
+				--shadow: 0 0 15px 0 rgba(0, 0, 0, 0.05);
+			}
+			* {
+				box-sizing: border-box;
+			}
+			input,
+			button,
+			textarea {
+				border: 0;
+				outline: none;
+			}
+			/* Main code */
+
+			.text-gradient {
+				margin: 0;
+				font-weight: bold;
+				font-size: 20px;
+				display: inline-block;
+				color: #bd93f9;
+			}
+			@supports (-webkit-background-clip: text) {
+				.text-gradient {
+					color: transparent;
+					background-image: linear-gradient(40deg, #ff6ec4, #7873f5);
+					-webkit-background-clip: text;
+				}
+			}
+			.title {
+				margin-bottom: 10px;
+			}
+		</style>
+	</head>
+
+	<body style="flex-direction: column">
+		<!-- modal -->
+		<div class="modal" id="todo_form">
+			<div class="header">
+				<div class="title">Add Todo</div>
+				<button class="btn close-modal">&times;</button>
+			</div>
+			<div class="body">
+				<input type="text" id="todo_input" />
+				<input value="Add Todo" id="todo_submit" />
+			</div>
+		</div>
+		<!-- todo -->
+		<div class="header">
+			<img
+				class="logo"
+				style="height: 80px; display: block; width: 100%"
+				src="{% static 'img/ToDoApp.svg' %}"
+				alt=""
+			/>
+		</div>
+		<h3 class="text-gradient username">
+			Username: <span>{{username}}</span>
+		</h3>
+
+		<h3 class="text-gradient title">Title: <span>{{title}}</span></h3>
+
+		<div class="todo-container">
+			<div class="status" id="0">
+				<h1>No Status</h1>
+				{% for i in list_nostatus %}
+				<div class="todo" draggable="true" style="display: block">
+					<input class="id" type="hidden" value="{{i.id}}" />
+					{{i.content}}<span class="close">×</span>
+				</div>
+				{% endfor%}
+
+				<button id="add_btn" data-target-modal="#todo_form">
+					+ Add Job
+				</button>
+			</div>
+
+			<div class="status" id="1">
+				<h1>Not Started</h1>
+				{% for i in list_notstarted %}
+				<div class="todo" draggable="true" style="display: block">
+					<input class="id" type="hidden" value="{{i.id}}" />
+					{{i.content}}<span class="close">×</span>
+				</div>
+				{% endfor%}
+			</div>
+			<div class="status" id="2">
+				<h1>In Progress</h1>
+				{% for i in list_inprogress %}
+				<div class="todo" draggable="true" style="display: block">
+					<input class="id" type="hidden" value="{{i.id}}" />
+					{{i.content}}<span class="close">×</span>
+				</div>
+				{% endfor%}
+			</div>
+			<div class="status" id="3">
+				<h1>Completed</h1>
+				{% for i in list_complete %}
+				<div class="todo" draggable="true" style="display: block">
+					<input class="id" type="hidden" value="{{i.id}}" />
+					{{i.content}}<span class="close">×</span>
+				</div>
+				{% endfor%}
+			</div>
+		</div>
+
+		<div id="overlay"></div>
+
+		<script src="{% static 'javascript/process_function.js' %}"></script>
+	</body>
+</html>
