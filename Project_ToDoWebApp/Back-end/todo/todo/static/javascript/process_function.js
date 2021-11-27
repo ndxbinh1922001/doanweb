@@ -1,3 +1,5 @@
+var a = "{{username}}";
+console.log(a);
 const todos = document.querySelectorAll(".todo");
 const all_status = document.querySelectorAll(".status");
 const myForm = document.getElementById("myForm");
@@ -115,13 +117,12 @@ function createTodo() {
 	inputElem.name = "csrfmiddlewaretoken";
 	inputElem.value = "{{% csrf_token %}}";
 	form.appendChild(inputElem);
-	const username =
-		document.querySelector(".username").lastElementChild.innerText;
+	const username = document.querySelector(".username_js").value;
 	console.log(username);
 	element1.value = username;
 	element1.name = "username";
 	form.appendChild(element1);
-	const title = document.querySelector(".big_title").innerText;
+	const title = document.querySelector(".title_js").value;
 	console.log(title);
 	element2.value = title;
 	element2.name = "title";

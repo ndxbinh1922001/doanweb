@@ -15,7 +15,8 @@ def logout_view(request):
     return redirect("home")
 
 
-@login_required
+@login_required(redirect_field_name='home')
+@login_required(redirect_field_name='home')
 def manage(request):
     user = MetaUser.objects.get(username__exact=request.user.username)
     fullname = getattr(user, 'fullname')
@@ -119,7 +120,7 @@ def home(request):
 ### function to remove item , it recive todo item id from url ##
 
 
-@login_required
+@login_required(redirect_field_name='home')
 def remove(request, item_id):
     item = Todo.objects.get(id=item_id)
     item.delete()
@@ -127,6 +128,7 @@ def remove(request, item_id):
     return redirect('manage')
 
 
+@login_required(redirect_field_name='home')
 def detail(request, item_id):
     item = Todo.objects.get(id=item_id)
     list_nostatus = Process.objects.filter(
@@ -139,16 +141,24 @@ def detail(request, item_id):
         username__exact=item.username).filter(title__exact=item.title).filter(process_id=3)
     username = item.username
     title = item.title
+    list_todo = Todo.objects.filter()
+    user = MetaUser.objects.get(username__exact=request.user.username)
+    img = getattr(user, "image")
+    fullname = getattr(user, 'fullname')
     return render(request, 'todo/process_function.html', {
+        "img": img,
+        "fullname": fullname,
         'username': username,
         'title': title,
         'list_nostatus': list_nostatus,
         'list_notstarted': list_notstarted,
         'list_inprogress': list_inprogress,
-        'list_complete': list_complete
+        'list_complete': list_complete,
+        "list_todo": list_todo,
     })
 
 
+@login_required(redirect_field_name='home')
 def createprocess(request):
 
     form = ProcessForm(request.POST)
@@ -165,16 +175,24 @@ def createprocess(request):
         username__exact=form.cleaned_data["username"]).filter(title__exact=form.cleaned_data["title"]).filter(process_id=3)
     username = form.cleaned_data["username"]
     title = form.cleaned_data["title"]
+    user = MetaUser.objects.get(username__exact=request.user.username)
+    img = getattr(user, "image")
+    fullname = getattr(user, 'fullname')
+    list_todo = Todo.objects.filter()
     return render(request, 'todo/process_function.html', {
+        "img": img,
+        "fullname": fullname,
         'username': username,
         'title': title,
         'list_nostatus': list_nostatus,
         'list_notstarted': list_notstarted,
         'list_inprogress': list_inprogress,
-        'list_complete': list_complete
+        'list_complete': list_complete,
+        "list_todo": list_todo,
     })
 
 
+@login_required(redirect_field_name='home')
 def deleteprocess(request, item_id):
     item = Process.objects.get(id=item_id)
     username = getattr(item, 'username')
@@ -192,16 +210,24 @@ def deleteprocess(request, item_id):
     list_complete = Process.objects.filter(
         username__exact=username).filter(
             title__exact=title).filter(process_id=3)
+    user = MetaUser.objects.get(username__exact=request.user.username)
+    img = getattr(user, "image")
+    fullname = getattr(user, 'fullname')
+    list_todo = Todo.objects.filter()
     return render(request, 'todo/process_function.html', {
+        "img": img,
+        "fullname": fullname,
         'username': username,
         'title': title,
         'list_nostatus': list_nostatus,
         'list_notstarted': list_notstarted,
         'list_inprogress': list_inprogress,
-        'list_complete': list_complete
+        'list_complete': list_complete,
+        "list_todo": list_todo,
     })
 
 
+@login_required(redirect_field_name='home')
 def updateprocess(request, item_id):
     item = Process.objects.get(id=item_id)
     item.process_id = request.POST["process_id"]
@@ -220,15 +246,23 @@ def updateprocess(request, item_id):
     list_complete = Process.objects.filter(
         username__exact=username).filter(
             title__exact=title).filter(process_id=3)
+    user = MetaUser.objects.get(username__exact=request.user.username)
+    img = getattr(user, "image")
+    fullname = getattr(user, 'fullname')
+    list_todo = Todo.objects.filter()
     return render(request, 'todo/process_function.html', {
+        "img": img,
+        "fullname": fullname,
         'username': username,
         'title': title,
         'list_nostatus': list_nostatus,
         'list_notstarted': list_notstarted,
         'list_inprogress': list_inprogress,
-        'list_complete': list_complete
+        'list_complete': list_complete,
+        "list_todo": list_todo,
     })
 
 
+@login_required(redirect_field_name='home')
 def calendar(request):
     return render(request, 'todo/calendar.html',)
