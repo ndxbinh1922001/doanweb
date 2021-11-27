@@ -51,7 +51,7 @@ function dragDrop() {
 	this.appendChild(draggableTodo);
 	console.log("dropped");
 	var form2 = document.createElement("form");
-	//form2.method = "POST";
+	form2.method = "POST";
 	const id = draggableTodo.firstElementChild.value;
 	form2.action = `/updateprocess/${id}`;
 	var inputElem = document.createElement("input");
@@ -64,7 +64,7 @@ function dragDrop() {
 	element3.name = "process_id";
 	form2.appendChild(element3);
 	document.body.appendChild(form2);
-	//form2.submit();
+	form2.submit();
 }
 
 /* modal */
@@ -108,8 +108,8 @@ function createTodo() {
 	var element2 = document.createElement("input");
 	var element3 = document.createElement("input");
 	var element4 = document.createElement("input");
-	//form.method = "POST";
-	//form.action = "/createprocess/";
+	form.method = "POST";
+	form.action = "/createprocess/";
 	var inputElem = document.createElement("input");
 	inputElem.type = "hidden";
 	inputElem.name = "csrfmiddlewaretoken";
@@ -117,13 +117,13 @@ function createTodo() {
 	form.appendChild(inputElem);
 	const username =
 		document.querySelector(".username").lastElementChild.innerText;
-
+	console.log(username);
 	element1.value = username;
 	element1.name = "username";
 	form.appendChild(element1);
-	const title = document.querySelector(".title").lastElementChild.innerText;
-
-	element2.value = "Xuan Binh";
+	const title = document.querySelector(".big_title").innerText;
+	console.log(title);
+	element2.value = title;
 	element2.name = "title";
 	form.appendChild(element2);
 
@@ -136,7 +136,7 @@ function createTodo() {
 	form.appendChild(element4);
 	document.body.appendChild(form);
 
-	//form.submit();
+	form.submit();
 }
 
 const close_btns = document.querySelectorAll(".close");
@@ -144,7 +144,7 @@ const close_btns = document.querySelectorAll(".close");
 close_btns.forEach((btn) => {
 	btn.addEventListener("click", () => {
 		var form1 = document.createElement("form");
-		//form1.method = "POST";
+		form1.method = "POST";
 		const id = btn.parentElement.firstElementChild.value;
 		form1.action = `/deleteprocess/${id}`;
 		var inputElem = document.createElement("input");
@@ -153,7 +153,7 @@ close_btns.forEach((btn) => {
 		inputElem.value = "{{% csrf_token %}}";
 		form1.appendChild(inputElem);
 		document.body.appendChild(form1);
-		//form1.submit();
+		form1.submit();
 		btn.parentElement.style.display = "none";
 	});
 });

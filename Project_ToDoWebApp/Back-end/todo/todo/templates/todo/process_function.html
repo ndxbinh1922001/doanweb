@@ -13,43 +13,6 @@
 				background-image: linear-gradient(to right, indigo, #ff6651);
 			}
 
-			/* You can remove these code below*/
-			:root {
-				--primary: #08aeea;
-				--secondary: #13d2b8;
-				--purple: #bd93f9;
-				--pink: #ff6bcb;
-				--blue: #8be9fd;
-				--gray: #333;
-				--font: "Poppins", sans-serif;
-				--gradient: linear-gradient(40deg, #ff6ec4, #7873f5);
-				--shadow: 0 0 15px 0 rgba(0, 0, 0, 0.05);
-			}
-			* {
-				box-sizing: border-box;
-			}
-			input,
-			button,
-			textarea {
-				border: 0;
-				outline: none;
-			}
-			/* Main code */
-
-			.text-gradient {
-				margin: 0;
-				font-weight: bold;
-				font-size: 20px;
-				display: inline-block;
-				color: #bd93f9;
-			}
-			@supports (-webkit-background-clip: text) {
-				.text-gradient {
-					color: transparent;
-					background-image: linear-gradient(40deg, #ff6ec4, #7873f5);
-					-webkit-background-clip: text;
-				}
-			}
 			.title {
 				margin-bottom: 10px;
 			}
@@ -57,17 +20,6 @@
 	</head>
 
 	<body style="flex-direction: column">
-		<!-- modal -->
-		<div class="modal" id="todo_form">
-			<div class="header">
-				<div class="title">Add Todo</div>
-				<button class="btn close-modal">&times;</button>
-			</div>
-			<div class="body">
-				<input type="text" id="todo_input" />
-				<input value="Add Todo" id="todo_submit" />
-			</div>
-		</div>
 		<!-- todo -->
 		<div class="header">
 			<img
@@ -81,7 +33,9 @@
 			Username: <span>{{username}}</span>
 		</h3>
 
-		<h3 class="text-gradient title">Title: <span>{{title}}</span></h3>
+		<h3 class="text-gradient title_page">
+			Title: <span class="big_title">{{title}}</span>
+		</h3>
 
 		<div class="todo-container">
 			<div class="status" id="0">
@@ -128,7 +82,17 @@
 		</div>
 
 		<div id="overlay"></div>
-
+		<!-- modal -->
+		<div class="modal" id="todo_form">
+			<div class="header">
+				<div class="title">Add Todo</div>
+				<button class="btn close-modal">&times;</button>
+			</div>
+			<div class="body">
+				<input type="text" id="todo_input" />
+				<input type="submit" value="Add Todo" id="todo_submit" />
+			</div>
+		</div>
 		<script src="{% static 'javascript/process_function.js' %}"></script>
 	</body>
 </html>
