@@ -265,4 +265,75 @@ def updateprocess(request, item_id):
 
 @login_required(redirect_field_name='home')
 def calendar(request):
-    return render(request, 'todo/calendar.html',)
+    user = MetaUser.objects.get(username__exact=request.user.username)
+    fullname = getattr(user, 'fullname')
+    username = getattr(user, 'username')
+    img = getattr(user, "image")
+
+    item_list = Todo.objects.order_by(
+        "-date").filter(username__exact=request.user.username)
+    if request.method == "POST" and request.FILES:
+        metauser = MetaUser.objects.get(
+            username__exact=request.user.username)
+        print("anh")
+        if metauser == None:
+            meta = UserForm(username=request.user.username,
+                            fullname=request.POST['fullname'], image=request.POST['image'])
+            if meta.is_valid():
+                meta.save()
+        else:
+            if len(request.FILES) != 0:
+                uploaded_file = request.FILES['document']
+                fs = FileSystemStorage()
+                name = fs.save(uploaded_file.name, uploaded_file)
+                metauser.image = name
+                metauser.save()
+    elif request.method == "POST" and "fullname" in request.POST:
+        print("fullname")
+        metauser = MetaUser.objects.get(username__exact=request.user.username)
+        if metauser == None:
+            meta = UserForm(username=request.user.username,
+                            fullname=request.POST['fullname'], image=request.POST['image'])
+            if meta.is_valid():
+                meta.save()
+        else:
+            metauser.fullname = request.POST['fullname']
+            metauser.save()
+    elif request.method == "POST" and "title_update" in request.POST:
+        print("ok")
+        print(request.POST['title_update'])
+        print(request.POST['details_update'])
+        print(request.POST['date_update'])
+        todo = Todo.objects.get(
+            username__exact=request.user.username, title__exact=request.POST['title_old'])
+        todo.title = request.POST['title_update']
+        todo.details = request.POST['details_update']
+        if len(request.POST['date_update']) != 0:
+            todo.date = request.POST['date_update']
+        todo.save()
+    elif request.method == "POST":
+        print("no ok")
+        print("task")
+        todo = Todo(username=request.user.username,
+                    title=request.POST['title'], details=request.POST['details'], date=request.POST['date'])
+        todo.save()
+        form = TodoForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('calendar')
+    form = TodoForm()
+    form1 = DocumentForm()
+    user = MetaUser.objects.get(username__exact=request.user.username)
+    img = getattr(user, "image")
+    fullname = getattr(user, 'fullname')
+    print(img)
+    page = {
+        "forms": form,
+        "list": item_list,
+        "title": "TODO LIST",
+        "fullname": fullname,
+        "img": img,
+        "username": username,
+        "form1": form1,
+    }
+    return render(request, 'todo/calendar.html', page)

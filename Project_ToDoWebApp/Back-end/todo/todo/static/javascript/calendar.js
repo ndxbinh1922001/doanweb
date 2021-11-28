@@ -151,3 +151,50 @@ function initButtons() {
 
 initButtons();
 load();
+const edit_tasks = document.querySelectorAll(".edit_task");
+const form_edit = document.querySelector(".form_edit");
+const button_edit = document.querySelector(".edit");
+const disable_form = document.querySelectorAll(".disable_form");
+const profile = document.querySelector(".profile_user");
+const showed = document.querySelector(".showed");
+const no_show = document.querySelector(".no_show");
+const js_cancel_tasks = document.querySelectorAll(".js_cancel_task");
+const js_cancel_profile = document.querySelector(".js_cancel_profile");
+js_cancel_tasks.forEach((js_cancel_task) => {
+	js_cancel_task.addEventListener("click", () => {
+		console.log(js_cancel_task.parentElement);
+		js_cancel_task.parentElement.classList.add("dis_active");
+		js_cancel_task.parentElement.previousElementSibling.classList.remove(
+			"dis_active"
+		);
+	});
+});
+js_cancel_profile.addEventListener("click", () => {
+	console.log(js_cancel_profile);
+	form_edit.classList.remove("active");
+	button_edit.classList.remove("dis_active");
+	profile.classList.remove("dis_active");
+});
+button_edit.addEventListener("click", () => {
+	form_edit.classList.add("active");
+	button_edit.classList.add("dis_active");
+	profile.classList.add("dis_active");
+});
+disable_form.forEach((btn) => {
+	btn.addEventListener("click", () => {
+		form_edit.classList.remove("active");
+		button_edit.classList.remove("dis_active");
+		profile.classList.remove("dis_active");
+	});
+});
+edit_tasks.forEach((edit_task) => {
+	const a = edit_task;
+	edit_task.addEventListener("click", () => {
+		a.parentElement.parentElement.firstElementChild.classList.add(
+			"dis_active"
+		);
+		a.parentElement.parentElement.firstElementChild.nextElementSibling.classList.remove(
+			"dis_active"
+		);
+	});
+});
