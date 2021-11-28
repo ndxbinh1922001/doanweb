@@ -20,4 +20,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 
     path('calendar/', views.calendar, name="calendar"),
+    path('delete/<int:item_id>', views.delete, name="delete"),
+    path('update/<int:item_id>', views.update, name="update"),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

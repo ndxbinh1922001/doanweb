@@ -1,9 +1,21 @@
 let nav = 0;
 let clicked = null;
+const item_list = document.getElementById("item_list").value;
+const full_item_list = document.getElementById("full_item_list").value;
+let a = item_list.replace("[", "");
+a = a.replace("]", "");
+a = a.replace(/'/g, "");
+a = a.split(",");
+let b = full_item_list.replace("[", "");
+b = b.replace("]", "");
+b = b.replace(/'/g, "");
+b = b.split(",");
+console.log(b);
+console.log(typeof b);
 let events = localStorage.getItem("events")
 	? JSON.parse(localStorage.getItem("events"))
 	: [];
-
+console.log(typeof events);
 const calendar = document.getElementById("calendar");
 const newEventModal = document.getElementById("newEventModal");
 const deleteEventModal = document.getElementById("deleteEventModal");
@@ -22,11 +34,82 @@ const weekdays = [
 function openModal(date) {
 	clicked = date;
 
-	const eventForDay = events.find((e) => e.date === clicked);
-
+	const eventForDay = a.find((e) => e.replace(/ /g, "") === clicked);
+	let content = ``;
 	if (eventForDay) {
-		document.getElementById("eventText").innerText = eventForDay.title;
+		for (item of b) {
+			let c = item.includes(clicked);
+			if (c) {
+				d = String(item).split("|")[1];
+				e = String(item).split("|")[2];
+				f = String(item).split("|")[3];
+				content += `<div class="box" style="position:relative;">
+				<div class="flip-card active">
+					<div class="flip-card-inner">
+						<div class="front">
+							<div class="card text-white bg-info mb-3 shadow" style="max-width: 95%;">
+								<div class="card-header">Title</div>
+								<div class="card-body">					
+									<p class="card-text">${d}</p>
+								</div>
+							</div>					
+						</div>
+						<div class="back">
+							<div class="card text-white bg-primary mb-3 shadow" style="max-width: 95%;">
+								<div class="card-header">Detail</div>
+								<div class="card-body">					
+									<p class="card-text">${e}</p>
+								</div>
+							</div>					
+				  		</div>
+					</div>
+			  	</div>
+				<div class="form_update" style="margin-bottom:10px">
+					<form method="POST" action="/update/${f}">
+						<input type="text" class="form-control" id="exampleFormControlInput1" name="title_update" value="${d}" >
+						<input type="text" class="form-control" id="exampleFormControlInput1" name="detail_update" value="${e}" >
+						<input type="datetime-local" id="date" name="date_update" />
+						<div class="btn-group" role="group" aria-label="Basic outlined example">
+							<button type="button" class="btn btn-outline-primary cancel_js">Cancel</button>  						
+							<button type="submit" class="btn btn-outline-primary">Save</button>
+						</div>
+					</form>
+				</div>				
+				<form method="POST" action="/delete/${f}">
+					<button class="deleteTask" type="submit" style="border:none;background-color:#e8f4fa;position:absolute;top:1px;right:-20px;font-size:20px"><i class="bi bi-x-lg"></i></button>
+				</form>
+				
+				<button class="updateTask" style="border:none;background-color:#e8f4fa;position:absolute;top:40px;right:-20px;font-size:20px"><i class="bi bi-pencil-square"></i></button>
+				
+			  </div>`;
+			}
+		}
+		document.getElementById("eventText").innerHTML = content;
 		deleteEventModal.style.display = "block";
+		const updatebtns = document.querySelectorAll(".updateTask");
+		updatebtns.forEach((updatebtn) => {
+			console.log("ok");
+			updatebtn.addEventListener("click", () => {
+				updatebtn.parentElement.firstElementChild.classList.remove(
+					"active"
+				);
+				updatebtn.parentElement.firstElementChild.nextElementSibling.classList.add(
+					"active"
+				);
+			});
+		});
+		const cancelbtns = document.querySelectorAll(".cancel_js");
+		cancelbtns.forEach((cancelbtn) => {
+			console.log("ok");
+			cancelbtn.addEventListener("click", () => {
+				cancelbtn.parentElement.parentElement.parentElement.classList.remove(
+					"active"
+				);
+				cancelbtn.parentElement.parentElement.parentElement.previousElementSibling.classList.add(
+					"active"
+				);
+			});
+		});
 	} else {
 		newEventModal.style.display = "block";
 	}
@@ -54,6 +137,7 @@ function load() {
 		month: "numeric",
 		day: "numeric",
 	});
+
 	const paddingDays = weekdays.indexOf(dateString.split(", ")[0]);
 
 	document.getElementById(
@@ -72,20 +156,24 @@ function load() {
 
 		if (i > paddingDays) {
 			daySquare.innerText = i - paddingDays;
-			const eventForDay = events.find((e) => e.date === dayString);
+			const eventForDay = a.find(
+				(e) => e.replace(/ /g, "") === dayString
+			);
 
 			if (i - paddingDays === day && nav === 0) {
 				daySquare.id = "currentDay";
 			}
 
 			if (eventForDay) {
-				const eventDiv = document.createElement("div");
-				eventDiv.classList.add("event");
-				eventDiv.innerText = eventForDay.title;
-				daySquare.appendChild(eventDiv);
+				// const eventDiv = document.createElement("div");
+				// eventDiv.classList.add("event");
+				// eventDiv.innerText = eventForDay.title;
+				// daySquare.appendChild(eventDiv);
+				daySquare.classList.add("taskDay");
 			}
 
 			daySquare.addEventListener("click", () => openModal(dayString));
+			// console.log(dayString);
 		} else {
 			daySquare.classList.add("padding");
 		}
@@ -95,11 +183,11 @@ function load() {
 }
 
 function closeModal() {
-	eventTitleInput.classList.remove("error");
+	//eventTitleInput.classList.remove("error");
 	newEventModal.style.display = "none";
 	deleteEventModal.style.display = "none";
 	backDrop.style.display = "none";
-	eventTitleInput.value = "";
+	//eventTitleInput.value = "";
 	clicked = null;
 	load();
 }
@@ -137,13 +225,12 @@ function initButtons() {
 		load();
 	});
 
-	document.getElementById("saveButton").addEventListener("click", saveEvent);
 	document
 		.getElementById("cancelButton")
 		.addEventListener("click", closeModal);
-	document
-		.getElementById("deleteButton")
-		.addEventListener("click", deleteEvent);
+	// document
+	// 	.getElementById("deleteButton")
+	// 	.addEventListener("click", deleteEvent);
 	document
 		.getElementById("closeButton")
 		.addEventListener("click", closeModal);

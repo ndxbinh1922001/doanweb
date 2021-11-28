@@ -36,7 +36,10 @@
 
 	<body>
 		<div class="header_page">
-			<img class="logo" src="{% static 'img/ToDoApp.svg' %}" alt="" />
+			<a href="/manage/"
+				><img class="logo" src="{% static 'img/ToDoApp.svg' %}" alt=""
+			/></a>
+
 			<button class="button-effect shadow-lg">
 				<a href="/logout/" style="text-decoration: none; color: white"
 					>Log Out</a
@@ -115,7 +118,12 @@
 							"
 							>Title:</label
 						>
-						<input type="text" name="title" id="title" />
+						<input
+							type="text"
+							name="title"
+							id="title"
+							class="title"
+						/>
 						<br />
 						<label
 							for="details"
@@ -127,7 +135,12 @@
 							"
 							>Details:</label
 						>
-						<input type="text" name="details" id="details" />
+						<input
+							type="text"
+							name="details"
+							id="details"
+							class="details"
+						/>
 						<br />
 						<label
 							for="date"
@@ -187,23 +200,24 @@
 		<div id="newEventModal">
 			<h2>New Event</h2>
 
-			<input id="eventTitleInput" placeholder="Event Title" />
+			<div class="alert alert-info" role="alert">
+				Hiện tại không có hoạt động gì. Đi chơi đi !!!
+			</div>
 
-			<button id="saveButton">Save</button>
 			<button id="cancelButton">Cancel</button>
 		</div>
 
 		<div id="deleteEventModal">
 			<h2>Event</h2>
 
-			<p id="eventText"></p>
+			<div id="eventText"></div>
 
-			<button id="deleteButton">Delete</button>
 			<button id="closeButton">Close</button>
 		</div>
 
 		<div id="modalBackDrop"></div>
-
+		<input type="hidden" value="{{list}} " id="item_list" />
+		<input type="hidden" value="{{list_full}} " id="full_item_list" />
 		<script src="{% static 'javascript/calendar.js' %}"></script>
 	</body>
 </html>

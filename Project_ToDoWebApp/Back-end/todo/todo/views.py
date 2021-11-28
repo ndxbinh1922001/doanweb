@@ -124,7 +124,7 @@ def home(request):
 def remove(request, item_id):
     item = Todo.objects.get(id=item_id)
     item.delete()
-    messages.info(request, "item removed !!!")
+
     return redirect('manage')
 
 
@@ -311,7 +311,7 @@ def calendar(request):
         if len(request.POST['date_update']) != 0:
             todo.date = request.POST['date_update']
         todo.save()
-    elif request.method == "POST":
+    elif request.method == "POST" and "title" in request.POST:
         print("no ok")
         print("task")
         todo = Todo(username=request.user.username,
@@ -320,6 +320,7 @@ def calendar(request):
         form = TodoForm(request.POST)
         if form.is_valid():
             form.save()
+            request = None
             return redirect('calendar')
     form = TodoForm()
     form1 = DocumentForm()
@@ -327,9 +328,12 @@ def calendar(request):
     img = getattr(user, "image")
     fullname = getattr(user, 'fullname')
     print(img)
+    #print(str(item_list[0].date).split(' ')[0])
+    print(convertFullData(item_list))
     page = {
         "forms": form,
-        "list": item_list,
+        "list": convertData(item_list),
+        "list_full": convertFullData(item_list),
         "title": "TODO LIST",
         "fullname": fullname,
         "img": img,
@@ -337,3 +341,41 @@ def calendar(request):
         "form1": form1,
     }
     return render(request, 'todo/calendar.html', page)
+
+
+def convertData(item_list):
+    result_list = []
+    for i in item_list:
+        a = str(i.date).split(' ')[0]
+        x, y, z = a.split('-')
+        b = y+"/"+z+"/"+x
+        result_list.append(b)
+    return result_list
+
+
+def convertFullData(item_list):
+    result_list = []
+    for i in item_list:
+        a = str(i.date).split(' ')[0]
+        x, y, z = a.split('-')
+        b = y+"/"+z+"/"+x+"|"+i.title+"|"+i.details+"|"+str(i.id)
+        result_list.append(b)
+    return result_list
+
+
+@login_required(redirect_field_name='home')
+def delete(request, item_id):
+    item = Todo.objects.get(id=item_id)
+    item.delete()
+    return redirect('calendar')
+
+
+@login_required(redirect_field_name='home')
+def update(request, item_id):
+    item = Todo.objects.get(id=item_id)
+    item.title = request.POST['title_update']
+    item.details = request.POST['detail_update']
+    if len(request.POST['date_update']) != 0:
+        item.date = request.POST['date_update']
+    item.save()
+    return redirect('calendar')
