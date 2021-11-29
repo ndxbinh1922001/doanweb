@@ -348,7 +348,7 @@ def convertData(item_list):
     for i in item_list:
         a = str(i.date).split(' ')[0]
         x, y, z = a.split('-')
-        b = y+"/"+z+"/"+x
+        b = str(int(y))+"/"+str(int(z))+"/"+x
         result_list.append(b)
     return result_list
 
@@ -358,7 +358,9 @@ def convertFullData(item_list):
     for i in item_list:
         a = str(i.date).split(' ')[0]
         x, y, z = a.split('-')
-        b = y+"/"+z+"/"+x+"|"+i.title+"|"+i.details+"|"+str(i.id)
+
+        b = str(int(y))+"/"+str(int(z))+"/"+x+"|" + \
+            i.title+"|"+i.details+"|"+str(i.id)
         result_list.append(b)
     return result_list
 
