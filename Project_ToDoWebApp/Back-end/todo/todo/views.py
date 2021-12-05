@@ -16,7 +16,6 @@ def logout_view(request):
 
 
 @login_required(redirect_field_name='home')
-@login_required(redirect_field_name='home')
 def manage(request):
     user = MetaUser.objects.get(username__exact=request.user.username)
     fullname = getattr(user, 'fullname')
@@ -25,13 +24,10 @@ def manage(request):
 
     item_list = Todo.objects.order_by(
         "-date").filter(username__exact=request.user.username)
-    item_first = Todo.objects.order_by(
-        "-date").filter(username__exact=request.user.username).first()
-    print(item_first.id)
+
     if request.method == "POST" and request.FILES:
         metauser = MetaUser.objects.get(
             username__exact=request.user.username)
-        print("anh")
         if metauser == None:
             meta = UserForm(username=request.user.username,
                             fullname=request.POST['fullname'], image=request.POST['image'])
@@ -45,7 +41,6 @@ def manage(request):
                 metauser.image = name
                 metauser.save()
     elif request.method == "POST" and "fullname" in request.POST:
-        print("fullname")
         metauser = MetaUser.objects.get(username__exact=request.user.username)
         if metauser == None:
             meta = UserForm(username=request.user.username,
@@ -56,10 +51,6 @@ def manage(request):
             metauser.fullname = request.POST['fullname']
             metauser.save()
     elif request.method == "POST" and "title_update" in request.POST:
-        print("ok")
-        print(request.POST['title_update'])
-        print(request.POST['details_update'])
-        print(request.POST['date_update'])
         todo = Todo.objects.get(
             username__exact=request.user.username, title__exact=request.POST['title_old'])
         todo.title = request.POST['title_update']
@@ -68,8 +59,6 @@ def manage(request):
             todo.date = request.POST['date_update']
         todo.save()
     elif request.method == "POST":
-        print("no ok")
-        print("task")
         todo = Todo(username=request.user.username,
                     title=request.POST['title'], details=request.POST['details'], date=request.POST['date'])
         todo.save()
@@ -82,9 +71,13 @@ def manage(request):
     user = MetaUser.objects.get(username__exact=request.user.username)
     img = getattr(user, "image")
     fullname = getattr(user, 'fullname')
-    print(img)
+    id_process = -1
+    if len(item_list) > 0:
+        item_first = Todo.objects.order_by(
+            "-date").filter(username__exact=request.user.username).first()
+        id_process = item_first.id
     page = {
-        "item_id": item_first.id,
+        "item_id": id_process,
         "forms": form,
         "list": item_list,
         "title": "TODO LIST",
@@ -334,10 +327,13 @@ def calendar(request):
     print(img)
     #print(str(item_list[0].date).split(' ')[0])
     print(convertFullData(item_list))
-    item_first = Todo.objects.order_by(
-        "-date").filter(username__exact=request.user.username).first()
+    id_process = -1
+    if len(item_list) > 0:
+        item_first = Todo.objects.order_by(
+            "-date").filter(username__exact=request.user.username).first()
+        id_process = item_first.id
     page = {
-        "item_id": item_first.id,
+        "item_id": id_process,
         "forms": form,
         "list": convertData(item_list),
         "list_full": convertFullData(item_list),
@@ -390,6 +386,7 @@ def update(request, item_id):
     return redirect('calendar')
 
 
+@login_required(redirect_field_name='home')
 def note(request):
     user = MetaUser.objects.get(username__exact=request.user.username)
     fullname = getattr(user, 'fullname')
@@ -401,7 +398,6 @@ def note(request):
     if request.method == "POST" and request.FILES:
         metauser = MetaUser.objects.get(
             username__exact=request.user.username)
-        print("anh")
         if metauser == None:
             meta = UserForm(username=request.user.username,
                             fullname=request.POST['fullname'], image=request.POST['image'])
@@ -415,7 +411,6 @@ def note(request):
                 metauser.image = name
                 metauser.save()
     elif request.method == "POST" and "fullname" in request.POST:
-        print("fullname")
         metauser = MetaUser.objects.get(username__exact=request.user.username)
         if metauser == None:
             meta = UserForm(username=request.user.username,
@@ -436,18 +431,19 @@ def note(request):
 
     if 'search' in request.GET:
         list_note = Note.objects.filter(
-            content__icontains=request.GET['search'])
+            content__icontains=request.GET['search']).filter(username__exact=request.user.username)
 
         request.GET = ""
     else:
-        list_note = Note.objects.all()
+        list_note = Note.objects.filter(username__exact=request.user.username)
         request.GET = ""
-    print(list_note[0].content)
-    item_first = Todo.objects.order_by(
-        "-date").filter(username__exact=request.user.username).first()
+    id_process = -1
+    if len(item_list) > 0:
+        item_first = Todo.objects.order_by(
+            "-date").filter(username__exact=request.user.username).first()
+        id_process = item_first.id
     page = {
-
-        "item_id": item_first.id,
+        "item_id": id_process,
         "list_note": list_note,
         "noteform": noteform,
         "forms": form,
@@ -462,6 +458,7 @@ def note(request):
     return render(request, 'todo/note.html', page)
 
 
+@login_required(redirect_field_name='home')
 def add_note(request):
     print(request.POST)
     note = Note(username=request.user.username,
@@ -470,6 +467,7 @@ def add_note(request):
     return redirect('note')
 
 
+@login_required(redirect_field_name='home')
 def delete_note(request, item_id):
     item = Note.objects.get(id=item_id)
     item.delete()

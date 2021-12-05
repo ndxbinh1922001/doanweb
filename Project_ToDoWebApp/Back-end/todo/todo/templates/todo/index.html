@@ -286,7 +286,7 @@
 							<li class="nav-item">
 								<a
 									class="nav-link"
-									href="{% url 'detail' item_id %}"
+									href="{% if item_id == -1 %}  {% else %} {% url 'detail' item_id %} {% endif %}"
 									>Process</a
 								>
 							</li>

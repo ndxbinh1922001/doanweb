@@ -45,10 +45,11 @@
 		<script src="/static/ckeditor/ckeditor/ckeditor.js"></script>
 		<style>
 			#deleteEventModal {
+				position: fixed;
 				width: 1000px;
 				display: none;
 				left: 50%;
-				top: calc(50% + 200px);
+				top: 50%;
 				transform: translate(-50%, -50%);
 			}
 
@@ -172,7 +173,7 @@
 		</style>
 	</head>
 
-	<body>
+	<body style="position: relative">
 		<div class="header_page">
 			<a href="/manage/"
 				><img class="logo" src="{% static 'img/ToDoApp.svg' %}" alt=""
@@ -201,7 +202,7 @@
 							<li class="nav-item">
 								<a
 									class="nav-link"
-									href="{% url 'detail' item_id %}"
+									href="{% if item_id == -1 %}  {% else %} {% url 'detail' item_id %} {% endif %}"
 									>Process</a
 								>
 							</li>
