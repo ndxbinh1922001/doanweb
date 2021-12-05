@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from .forms import DocumentForm, TodoForm, ProcessForm, UserForm
-from .models import Todo, Process, MetaUser
+from .forms import DocumentForm, NoteForm, TodoForm, ProcessForm, UserForm
+from .models import Note, Todo, Process, MetaUser
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import UserCreationForm
 from django.core.files.storage import FileSystemStorage
@@ -25,6 +25,9 @@ def manage(request):
 
     item_list = Todo.objects.order_by(
         "-date").filter(username__exact=request.user.username)
+    item_first = Todo.objects.order_by(
+        "-date").filter(username__exact=request.user.username).first()
+    print(item_first.id)
     if request.method == "POST" and request.FILES:
         metauser = MetaUser.objects.get(
             username__exact=request.user.username)
@@ -81,6 +84,7 @@ def manage(request):
     fullname = getattr(user, 'fullname')
     print(img)
     page = {
+        "item_id": item_first.id,
         "forms": form,
         "list": item_list,
         "title": "TODO LIST",
@@ -330,7 +334,10 @@ def calendar(request):
     print(img)
     #print(str(item_list[0].date).split(' ')[0])
     print(convertFullData(item_list))
+    item_first = Todo.objects.order_by(
+        "-date").filter(username__exact=request.user.username).first()
     page = {
+        "item_id": item_first.id,
         "forms": form,
         "list": convertData(item_list),
         "list_full": convertFullData(item_list),
@@ -381,3 +388,89 @@ def update(request, item_id):
         item.date = request.POST['date_update']
     item.save()
     return redirect('calendar')
+
+
+def note(request):
+    user = MetaUser.objects.get(username__exact=request.user.username)
+    fullname = getattr(user, 'fullname')
+    username = getattr(user, 'username')
+    img = getattr(user, "image")
+
+    item_list = Todo.objects.order_by(
+        "-date").filter(username__exact=request.user.username)
+    if request.method == "POST" and request.FILES:
+        metauser = MetaUser.objects.get(
+            username__exact=request.user.username)
+        print("anh")
+        if metauser == None:
+            meta = UserForm(username=request.user.username,
+                            fullname=request.POST['fullname'], image=request.POST['image'])
+            if meta.is_valid():
+                meta.save()
+        else:
+            if len(request.FILES) != 0:
+                uploaded_file = request.FILES['document']
+                fs = FileSystemStorage()
+                name = fs.save(uploaded_file.name, uploaded_file)
+                metauser.image = name
+                metauser.save()
+    elif request.method == "POST" and "fullname" in request.POST:
+        print("fullname")
+        metauser = MetaUser.objects.get(username__exact=request.user.username)
+        if metauser == None:
+            meta = UserForm(username=request.user.username,
+                            fullname=request.POST['fullname'], image=request.POST['image'])
+            if meta.is_valid():
+                meta.save()
+        else:
+            metauser.fullname = request.POST['fullname']
+            metauser.save()
+
+    form = TodoForm()
+    form1 = DocumentForm()
+    user = MetaUser.objects.get(username__exact=request.user.username)
+    img = getattr(user, "image")
+    fullname = getattr(user, 'fullname')
+
+    noteform = NoteForm()
+
+    if 'search' in request.GET:
+        list_note = Note.objects.filter(
+            content__icontains=request.GET['search'])
+
+        request.GET = ""
+    else:
+        list_note = Note.objects.all()
+        request.GET = ""
+    print(list_note[0].content)
+    item_first = Todo.objects.order_by(
+        "-date").filter(username__exact=request.user.username).first()
+    page = {
+
+        "item_id": item_first.id,
+        "list_note": list_note,
+        "noteform": noteform,
+        "forms": form,
+        "list": convertData(item_list),
+        "list_full": convertFullData(item_list),
+        "title": "TODO LIST",
+        "fullname": fullname,
+        "img": img,
+        "username": username,
+        "form1": form1,
+    }
+    return render(request, 'todo/note.html', page)
+
+
+def add_note(request):
+    print(request.POST)
+    note = Note(username=request.user.username,
+                content=request.POST['content'])
+    note.save()
+    return redirect('note')
+
+
+def delete_note(request, item_id):
+    item = Note.objects.get(id=item_id)
+    item.delete()
+    return redirect('note')

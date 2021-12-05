@@ -1,8 +1,10 @@
 from django.db import models
 from django.utils import timezone
-
-
+#from ckeditor.fields import RichTextField
+from ckeditor_uploader.fields import RichTextUploadingField
 # Create your models here.
+
+
 class Todo(models.Model):
     username = models.CharField(max_length=100, default='')
     title = models.CharField(max_length=100)
@@ -31,3 +33,12 @@ class MetaUser(models.Model):
 
     def __str__(self):
         return '{} | {}'.format(self.username, self.fullname)
+
+
+class Note(models.Model):
+    username = models.CharField(max_length=100, default='')
+    #content = models.CharField(max_length=5000, default='')
+    content = RichTextUploadingField(blank=True, null=True)
+
+    def __str__(self):
+        return str(self.id)

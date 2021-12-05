@@ -31,7 +31,8 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-
+    'ckeditor_uploader',
+    'ckeditor',
     'todo',
     'crispy_forms',
     'django.contrib.admin',
@@ -122,7 +123,9 @@ CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'todo/static/')
 LOGIN_URL = '/todo/home.html'
 APPEND_SLASH = False
 MEDIA_URL = '/todo/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'todo/media/images/')
+CKEDITOR_UPLOAD_PATH = ''

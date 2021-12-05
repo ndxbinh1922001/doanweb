@@ -364,3 +364,20 @@ body {
 .form-control {
 	width: 95% !important;
 }
+.my_nav {
+	width: 500px;
+	position: absolute;
+	top: 13px;
+	left: 240px;
+	font-size: 25px;
+}
+#my_nav > li {
+	margin: 0 5px;
+}
+#my_nav > li:hover {
+	border: 1px solid #08aeea;
+}
+a:focus,
+a:hover {
+	text-decoration: none !important;
+}

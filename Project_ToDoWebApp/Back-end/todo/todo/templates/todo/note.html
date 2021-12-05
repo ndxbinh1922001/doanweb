@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>TodoApp</title>
+		{% load static %}
+		<link
+			rel="stylesheet"
+			href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+		/>
+		<link
+			rel="stylesheet"
+			href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.1/font/bootstrap-icons.css"
+		/>
+		<link
+			href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+			rel="stylesheet"
+			integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+			crossorigin="anonymous"
+		/>
+		<script
+			src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
+			integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
+			crossorigin="anonymous"
+		></script>
+		<script
+			src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
+			integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
+			crossorigin="anonymous"
+		></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+		<link rel="stylesheet" href="{% static 'css/calendar.css' %}" />
+		<script
+			src="/static/ckeditor/ckeditor-init.js"
+			data-ckeditor-basepath="/static/ckeditor/ckeditor/"
+			id="ckeditor-init-script"
+		></script>
+		<link rel="preconnect" href="https://fonts.gstatic.com" />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap"
+			rel="stylesheet"
+		/>
+		<script src="/static/ckeditor/ckeditor/ckeditor.js"></script>
+		<style>
+			#deleteEventModal {
+				width: 1000px;
+				display: none;
+				left: 50%;
+				top: calc(50% + 200px);
+				transform: translate(-50%, -50%);
+			}
+
+			#btn_add,
+			#btn_add::after {
+				width: 240px;
+				height: 50px;
+				font-size: 20px;
+				font-family: "Bebas Neue", cursive;
+				background: linear-gradient(45deg, transparent 5%, #ff013c 5%);
+				border: 0;
+				color: #fff;
+				letter-spacing: 3px;
+				line-height: 55px;
+				box-shadow: 6px 0px 0px #00e6f6;
+				outline: transparent;
+				position: relative;
+			}
+
+			#btn_add::after {
+				--slice-0: inset(50% 50% 50% 50%);
+				--slice-1: inset(80% -6px 0 0);
+				--slice-2: inset(50% -6px 30% 0);
+				--slice-3: inset(10% -6px 85% 0);
+				--slice-4: inset(40% -6px 43% 0);
+				--slice-5: inset(80% -6px 5% 0);
+
+				content: "Add Note";
+				display: block;
+				position: absolute;
+				top: 0;
+				left: 0;
+				right: 0;
+				bottom: 0;
+				background: linear-gradient(
+					45deg,
+					transparent 3%,
+					#00e6f6 3%,
+					#00e6f6 5%,
+					#ff013c 5%
+				);
+				text-shadow: -3px -3px 0px #f8f005, 3px 3px 0px #00e6f6;
+				clip-path: var(--slice-0);
+			}
+
+			#btn_add:hover::after {
+				animation: 1s glitch;
+				animation-timing-function: steps(2, end);
+			}
+
+			@keyframes glitch {
+				0% {
+					clip-path: var(--slice-1);
+					transform: translate(-20px, -10px);
+				}
+				10% {
+					clip-path: var(--slice-3);
+					transform: translate(10px, 10px);
+				}
+				20% {
+					clip-path: var(--slice-1);
+					transform: translate(-10px, 10px);
+				}
+				30% {
+					clip-path: var(--slice-3);
+					transform: translate(0px, 5px);
+				}
+				40% {
+					clip-path: var(--slice-2);
+					transform: translate(-5px, 0px);
+				}
+				50% {
+					clip-path: var(--slice-3);
+					transform: translate(5px, 0px);
+				}
+				60% {
+					clip-path: var(--slice-4);
+					transform: translate(5px, 10px);
+				}
+				70% {
+					clip-path: var(--slice-2);
+					transform: translate(-10px, 10px);
+				}
+				80% {
+					clip-path: var(--slice-5);
+					transform: translate(20px, -10px);
+				}
+				90% {
+					clip-path: var(--slice-1);
+					transform: translate(-10px, 0px);
+				}
+				100% {
+					clip-path: var(--slice-1);
+					transform: translate(0);
+				}
+			}
+			.icon:hover {
+				opacity: 0.6;
+				cursor: pointer;
+			}
+			.card-body {
+				padding: 1rem 2rem;
+			}
+			.my_nav {
+				width: 500px;
+				position: absolute;
+				top: 13px;
+				left: 240px;
+				font-size: 25px;
+			}
+			#my_nav > li {
+				margin: 0 5px;
+			}
+			#my_nav > li:hover {
+				border: 1px solid #08aeea;
+			}
+			a:focus,
+			a:hover {
+				text-decoration: none !important;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="header_page">
+			<a href="/manage/"
+				><img class="logo" src="{% static 'img/ToDoApp.svg' %}" alt=""
+			/></a>
+			<nav class="navbar navbar-expand-lg navbar-light bg-light my_nav">
+				<div class="container-fluid">
+					<button
+						class="navbar-toggler"
+						type="button"
+						data-bs-toggle="collapse"
+						data-bs-target="#navbarSupportedContent"
+						aria-controls="navbarSupportedContent"
+						aria-expanded="false"
+						aria-label="Toggle navigation"
+					>
+						<span class="navbar-toggler-icon"></span>
+					</button>
+					<div
+						class="collapse navbar-collapse"
+						id="navbarSupportedContent"
+					>
+						<ul id="my_nav" class="navbar-nav me-auto mb-2 mb-lg-0">
+							<li class="nav-item">
+								<a class="nav-link" href="/manage/">Home</a>
+							</li>
+							<li class="nav-item">
+								<a
+									class="nav-link"
+									href="{% url 'detail' item_id %}"
+									>Process</a
+								>
+							</li>
+							<li class="nav-item">
+								<a
+									class="nav-link active"
+									aria-current="page"
+									href="#"
+									>Note</a
+								>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link" href="#">About</a>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</nav>
+			<button class="button-effect shadow-lg">
+				<a href="/logout/" style="text-decoration: none; color: white"
+					>Log Out</a
+				>
+				<i class="bi bi-box-arrow-right"></i>
+			</button>
+			<hr />
+		</div>
+		<div class="row">
+			<div class="col-md-3 profile">
+				<div class="container">
+					<img
+						src="../todo/media/{{img}}"
+						class="rounded-circle"
+						alt="Cinque Terre"
+						width="236"
+						height="236"
+					/>
+					<div style="display: flex">
+						<div class="profile_user">
+							<h2>{{fullname}}</h2>
+							<p style="font-size: 16px" class="text-muted">
+								{{username}}
+							</p>
+						</div>
+						<button class="edit">
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								width="16"
+								height="16"
+								fill="currentColor"
+								class="bi bi-pencil-square"
+								viewBox="0 0 16 16"
+							>
+								<path
+									d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"
+								/>
+								<path
+									fill-rule="evenodd"
+									d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"
+								/>
+							</svg>
+						</button>
+					</div>
+					<div class="form_edit">
+						<form method="post" enctype="multipart/form-data">
+							{% csrf_token %}
+							<input type="file" name="document" />
+							<button type="submit">Upload image</button>
+						</form>
+						<form method="post">
+							{% csrf_token %}
+							<input
+								type="text"
+								name="fullname"
+								class="fullname"
+								placeholder="FULL NAME"
+							/>
+
+							<button type="submit">Save</button>
+						</form>
+						<button class="js_cancel_profile">Cancel</button>
+					</div>
+				</div>
+				<button id="btn_add">Add Note</button>
+			</div>
+			<div class="col-md-3"></div>
+			<div class="col-md-8">
+				<div class="container">
+					<form class="d-flex">
+						<input
+							class="form-control me-2"
+							type="search"
+							placeholder="Search"
+							aria-label="Search"
+							name="search"
+						/>
+						<button
+							class="btn btn-outline-danger"
+							style="margin: 0 10px"
+							id="btn_return"
+						>
+							<i
+								class="bi bi-arrow-return-left"
+								style="padding: 0 5px; font-size: 16px"
+							></i>
+						</button>
+						<button
+							class="btn btn-outline-success"
+							style="padding: 0 15px; font-size: 18px"
+							type="submit"
+						>
+							Search
+						</button>
+					</form>
+					{% for note in list_note %}
+					<div
+						class="card"
+						style="margin-top: 15px; position: relative"
+					>
+						<div class="card-body">{{note.content | safe}}</div>
+						<form action="/delete_note/{{note.id}}" method="POST">
+							<button type="submit" style="border: none">
+								<i
+									class="bi bi-x-lg icon"
+									style="
+										position: absolute;
+										top: 0px;
+										right: 3px;
+										font-size: 20px;
+									"
+								></i>
+							</button>
+						</form>
+					</div>
+
+					<!---->
+					{% endfor %}
+				</div>
+			</div>
+			<div id="deleteEventModal">
+				<h2>Add Note</h2>
+
+				<div id="eventText">
+					<form action="/add_note/" method="POST">
+						{{noteform}}
+						<button
+							type="submit"
+							value="save"
+							name="Save"
+							id="submit_note"
+						>
+							Add Note
+						</button>
+					</form>
+				</div>
+			</div>
+
+			<div id="modalBackDrop"></div>
+		</div>
+
+		<script>
+			const btn_add = document.getElementById("btn_add");
+			const deleteEventModal =
+				document.getElementById("deleteEventModal");
+			const modalBackDrop = document.getElementById("modalBackDrop");
+			btn_add.addEventListener("click", () => {
+				deleteEventModal.classList.add("active");
+				modalBackDrop.classList.add("active");
+			});
+			modalBackDrop.addEventListener("click", () => {
+				deleteEventModal.classList.remove("active");
+				modalBackDrop.classList.remove("active");
+			});
+			const edit_tasks = document.querySelectorAll(".edit_task");
+			const form_edit = document.querySelector(".form_edit");
+			const button_edit = document.querySelector(".edit");
+			const disable_form = document.querySelectorAll(".disable_form");
+			const profile = document.querySelector(".profile_user");
+			const showed = document.querySelector(".showed");
+			const no_show = document.querySelector(".no_show");
+			const js_cancel_tasks =
+				document.querySelectorAll(".js_cancel_task");
+			const js_cancel_profile =
+				document.querySelector(".js_cancel_profile");
+			js_cancel_tasks.forEach((js_cancel_task) => {
+				js_cancel_task.addEventListener("click", () => {
+					console.log(js_cancel_task.parentElement);
+					js_cancel_task.parentElement.classList.add("dis_active");
+					js_cancel_task.parentElement.previousElementSibling.classList.remove(
+						"dis_active"
+					);
+				});
+			});
+			js_cancel_profile.addEventListener("click", () => {
+				console.log(js_cancel_profile);
+				form_edit.classList.remove("active");
+				button_edit.classList.remove("dis_active");
+				profile.classList.remove("dis_active");
+			});
+			button_edit.addEventListener("click", () => {
+				form_edit.classList.add("active");
+				button_edit.classList.add("dis_active");
+				profile.classList.add("dis_active");
+			});
+			disable_form.forEach((btn) => {
+				btn.addEventListener("click", () => {
+					form_edit.classList.remove("active");
+					button_edit.classList.remove("dis_active");
+					profile.classList.remove("dis_active");
+				});
+			});
+			edit_tasks.forEach((edit_task) => {
+				const a = edit_task;
+				edit_task.addEventListener("click", () => {
+					a.parentElement.parentElement.firstElementChild.classList.add(
+						"dis_active"
+					);
+					a.parentElement.parentElement.firstElementChild.nextElementSibling.classList.remove(
+						"dis_active"
+					);
+				});
+			});
+		</script>
+	</body>
+</html>

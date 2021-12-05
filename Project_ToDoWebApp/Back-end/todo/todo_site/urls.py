@@ -1,6 +1,7 @@
 
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, re_path
+from django.urls.conf import include
 from todo import views
 from django.conf.urls.static import static
 from django.conf import settings
@@ -22,4 +23,9 @@ urlpatterns = [
     path('calendar/', views.calendar, name="calendar"),
     path('delete/<int:item_id>', views.delete, name="delete"),
     path('update/<int:item_id>', views.update, name="update"),
+
+    path('note/', views.note, name="note"),
+    path('ckeditor/', include('ckeditor_uploader.urls')),
+    path('add_note/', views.add_note, name="add_note"),
+    path('delete_note/<int:item_id>', views.delete_note, name="delete_note"),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

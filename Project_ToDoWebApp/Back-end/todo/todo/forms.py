@@ -1,7 +1,8 @@
 from django import forms
 from django.db.models import fields
-from .models import Todo, Process, MetaUser
+from .models import Note, Todo, Process, MetaUser
 from django.views.generic.edit import FormView
+from ckeditor_uploader.widgets import CKEditorUploadingWidget
 
 
 class TodoForm(forms.ModelForm):
@@ -27,3 +28,11 @@ class UserForm(forms.ModelForm):
     class Meta:
         model = MetaUser
         fields = "__all__"
+
+
+class NoteForm(forms.ModelForm):
+    content = forms.CharField(widget=CKEditorUploadingWidget)
+
+    class Meta:
+        model = Note
+        fields = ["content", ]

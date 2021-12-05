@@ -228,6 +228,23 @@
 			.button_body {
 				margin-top: 20px;
 			}
+			.my_nav {
+				width: 500px;
+				position: absolute;
+				top: 13px;
+				left: 240px;
+				font-size: 25px;
+			}
+			#my_nav > li {
+				margin: 0 5px;
+			}
+			#my_nav > li:hover {
+				border: 1px solid #08aeea;
+			}
+			a:focus,
+			a:hover {
+				text-decoration: none !important;
+			}
 		</style>
 	</head>
 
@@ -240,6 +257,51 @@
 
 		<div class="header">
 			<img class="logo" src="{% static 'img/ToDoApp.svg' %}" alt="" />
+			<nav class="navbar navbar-expand-lg navbar-light bg-light my_nav">
+				<div class="container-fluid">
+					<button
+						class="navbar-toggler"
+						type="button"
+						data-bs-toggle="collapse"
+						data-bs-target="#navbarSupportedContent"
+						aria-controls="navbarSupportedContent"
+						aria-expanded="false"
+						aria-label="Toggle navigation"
+					>
+						<span class="navbar-toggler-icon"></span>
+					</button>
+					<div
+						class="collapse navbar-collapse"
+						id="navbarSupportedContent"
+					>
+						<ul id="my_nav" class="navbar-nav me-auto mb-2 mb-lg-0">
+							<li class="nav-item">
+								<a
+									class="nav-link active"
+									aria-current="page"
+									href="#"
+									>Home</a
+								>
+							</li>
+							<li class="nav-item">
+								<a
+									class="nav-link"
+									href="{% url 'detail' item_id %}"
+									>Process</a
+								>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link" href="{% url 'note' %}"
+									>Note</a
+								>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link" href="#">About</a>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</nav>
 			<button class="button-effect shadow-lg">
 				<a href="/logout/" style="text-decoration: none; color: white"
 					>Log Out</a
